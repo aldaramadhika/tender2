@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radar Tender Indonesia v2.0</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen relative overflow-x-hidden">
+
+    <!-- Top Navbar -->
+    <nav class="bg-slate-900 text-white shadow-md px-6 py-4 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <span class="text-3xl">🎯</span>
+                <div>
+                    <h1 class="text-lg font-black tracking-wider leading-none">RadarTender.id</h1>
+                    <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Sistem Agregator Tender</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="bg-blue-500/10 text-blue-400 text-xs px-3 py-1.5 rounded-full font-mono border border-blue-500/20">v2.0-MVP (INTERAKTIF)</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section (The Aesthetic Box) -->
+    <div class="bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 py-10">
+            <!-- Kotak Judul Gradien Premium -->
+            <div class="relative overflow-hidden bg-gradient-to-r from-blue-700 via-indigo-800 to-indigo-950 rounded-2xl p-8 md:p-10 shadow-xl text-white mb-6 transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                <div class="absolute -right-10 -bottom-10 text-white opacity-10 text-9xl font-bold select-none pointer-events-none">
+                    TENDER
+                </div>
+                <div class="relative z-10">
+                    <span class="bg-indigo-500/30 text-indigo-200 text-xs px-3 py-1 rounded-full font-bold uppercase tracking-widest">Indonesia Procurement Hub</span>
+                    <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight mt-3">RADAR TENDER INDONESIA</h2>
+                    <p class="mt-2 text-blue-100 font-light text-base md:text-lg max-w-2xl">
+                        Sistem agregasi pintar untuk melacak peluang proyek dari instansi Pemerintahan (LPSE), BUMN, dan Sektor Swasta Terpercaya secara real-time.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Sub-Header Actions -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-8 pt-4 border-t border-slate-100">
+                <p class="text-slate-500 text-sm max-w-lg leading-relaxed">
+                    Gunakan panel kontrol di sebelah kiri untuk menyaring bidang pekerjaan, memasukkan kata kunci pencarian, atau mendaftarkan alamat crawler scraping baru.
+                </p>
+                <button onclick="openPortalsModal()" class="flex items-center justify-center gap-2 bg-indigo-50 text-indigo-700 px-6 py-3.5 rounded-xl font-bold border border-indigo-100 hover:bg-indigo-600 hover:text-white transition-all shadow-sm group">
+                    <span>📂 Lihat Daftar E-Proc (Halaman Baru)</span>
+                    <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-6 mt-10 grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        <!-- Sidebar Controls -->
+        <div class="space-y-6 lg:col-span-1">
+            <!-- Filter Card -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <span>🔍</span> Filter Pencarian
+                </h3>
+                
+                <!-- Search bar -->
+                <div class="mb-4">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Kata Kunci</label>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="search-input"
+                            placeholder="Cari nama tender..." 
+                            class="w-full p-3 pl-9 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition-all"
+                            oninput="filterData()"
+                        />
+                        <span class="absolute left-3 top-3.5 text-slate-400 text-sm">🔍</span>
+                    </div>
+                </div>
+
+                <!-- Job Type Filter -->
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Jenis Pekerjaan</label>
+                    <select 
+                        id="jobtype-select"
+                        class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none transition-all cursor-pointer"
+                        onchange="filterData()"
+                    >
+                        <option value="all">Semua Jenis Pekerjaan</option>
+                        <option value="Jasa Konsultasi Non Konstruksi">Jasa Konsultasi Non Konstruksi</option>
+                        <option value="Pembelian Barang">Pembelian Barang</option>
+                        <option value="Jasa Lainnya">Jasa Lainnya</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Scrape Request Card -->
+            <div class="bg-indigo-900 p-6 rounded-2xl shadow-xl text-white relative overflow-hidden">
+                <div class="absolute -right-6 -top-6 w-24 h-24 bg-white/5 rounded-full pointer-events-none"></div>
+                <h3 class="font-bold mb-1 text-lg flex items-center gap-2">
+                    <span>➕</span> Tambah Target Scrape
+                </h3>
+                <p class="text-xs text-indigo-200 mb-4 font-light leading-relaxed">
+                    Masukkan alamat website pengadaan daerah atau BUMN baru yang ingin Anda pantau. Engine kami akan otomatis menyesuaikan struktur datanya.
+                </p>
+                <div class="space-y-3">
+                    <input 
+                        type="url" 
+                        id="target-url"
+                        placeholder="https://lpse.daerah.go.id" 
+                        class="w-full p-3 bg-white/10 border border-white/20 rounded-xl text-sm placeholder-indigo-300 focus:outline-none focus:ring-2 focus:ring-white/40 text-white" 
+                    />
+                    <button 
+                        onclick="handleAddScrape()"
+                        class="w-full bg-white text-indigo-900 font-bold py-3 rounded-xl text-sm hover:bg-indigo-50 active:scale-[0.98] transition-all shadow-md"
+                    >
+                        Request Scraping
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Data Table -->
+        <div class="lg:col-span-3 space-y-4">
+            
+            <!-- Category Tabs Selector -->
+            <div class="flex flex-wrap gap-1 bg-slate-200/60 p-1.5 rounded-xl w-fit">
+                <button onclick="setCategoryFilter('all')" id="btn-cat-all" class="px-5 py-2 rounded-lg text-sm font-bold capitalize transition-all bg-white text-indigo-900 shadow-sm">
+                    Semua
+                </button>
+                <button onclick="setCategoryFilter('pemerintah')" id="btn-cat-pemerintah" class="px-5 py-2 rounded-lg text-sm font-bold capitalize transition-all text-slate-500 hover:text-slate-800">
+                    Pemerintah (LPSE)
+                </button>
+                <button onclick="setCategoryFilter('bumn')" id="btn-cat-bumn" class="px-5 py-2 rounded-lg text-sm font-bold capitalize transition-all text-slate-500 hover:text-slate-800">
+                    BUMN
+                </button>
+                <button onclick="setCategoryFilter('swasta')" id="btn-cat-swasta" class="px-5 py-2 rounded-lg text-sm font-bold capitalize transition-all text-slate-500 hover:text-slate-800">
+                    Swasta
+                </button>
+            </div>
+
+            <!-- Table Wrapper -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-400 text-[10px] uppercase tracking-widest border-b border-slate-100">
+                                <th class="p-5 font-bold">Informasi Paket Tender</th>
+                                <th class="p-5 font-bold">Jenis Pekerjaan / Kategori</th>
+                                <th class="p-5 font-bold">Nilai HPS</th>
+                                <th class="p-5 font-bold">Batas Waktu</th>
+                                <th class="p-5 font-bold text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tender-table-rows" class="divide-y divide-slate-100">
+                            <!-- Rows dynamically populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- PORTALS MODAL (Simulating opening a new page) -->
+    <div id="portals-modal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 md:p-10 hidden transition-opacity duration-300 opacity-0">
+        <div class="bg-slate-950 border border-slate-800 rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl transform scale-95 transition-transform duration-300">
+            <!-- Modal Header -->
+            <div class="p-6 md:p-8 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <h2 class="text-xl md:text-2xl font-black text-white tracking-tight">E-PROC PORTAL LIST</h2>
+                    </div>
+                    <p class="text-sm text-slate-400 mt-1">Daftar portal pengadaan Indonesia yang saat ini terintegrasi dan terpantau aktif.</p>
+                </div>
+                <button onclick="closePortalsModal()" class="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 p-2.5 rounded-xl transition-all">
+                    ✕ Tutup Halaman
+                </button>
+            </div>
+            
+            <!-- Modal Body (Portal Lists) -->
+            <div class="p-6 md:p-8 overflow-y-auto space-y-4 max-h-[50vh]">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <!-- Portal Item -->
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl hover:border-indigo-500 transition-all group">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="text-white font-bold text-base group-hover:text-indigo-400 transition-colors">LPSE Nasional (LKPP)</h4>
+                            <span class="bg-blue-500/10 text-blue-400 text-[9px] font-bold px-2 py-0.5 rounded-full border border-blue-500/20 uppercase">Pemerintah</span>
+                        </div>
+                        <p class="text-xs text-slate-500 font-mono mb-3">https://lpse.lkpp.go.id</p>
+                        <a href="https://lpse.lkpp.go.id" target="_blank" class="text-indigo-400 text-xs hover:underline inline-flex items-center gap-1">Kunjungi Portal Asli &rarr;</a>
+                    </div>
+
+                    <!-- Portal Item -->
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl hover:border-indigo-500 transition-all group">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="text-white font-bold text-base group-hover:text-indigo-400 transition-colors">e-Procurement Pertamina</h4>
+                            <span class="bg-orange-500/10 text-orange-400 text-[9px] font-bold px-2 py-0.5 rounded-full border border-orange-500/20 uppercase">BUMN</span>
+                        </div>
+                        <p class="text-xs text-slate-500 font-mono mb-3">https://eproc.pertamina.com</p>
+                        <a href="https://eproc.pertamina.com" target="_blank" class="text-indigo-400 text-xs hover:underline inline-flex items-center gap-1">Kunjungi Portal Asli &rarr;</a>
+                    </div>
+
+                    <!-- Portal Item -->
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl hover:border-indigo-500 transition-all group">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="text-white font-bold text-base group-hover:text-indigo-400 transition-colors">e-Procurement PLN</h4>
+                            <span class="bg-orange-500/10 text-orange-400 text-[9px] font-bold px-2 py-0.5 rounded-full border border-orange-500/20 uppercase">BUMN</span>
+                        </div>
+                        <p class="text-xs text-slate-500 font-mono mb-3">https://eproc.pln.co.id</p>
+                        <a href="https://eproc.pln.co.id" target="_blank" class="text-indigo-400 text-xs hover:underline inline-flex items-center gap-1">Kunjungi Portal Asli &rarr;</a>
+                    </div>
+
+                    <!-- Portal Item -->
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl hover:border-indigo-500 transition-all group">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="text-white font-bold text-base group-hover:text-indigo-400 transition-colors">Astra International Tender Portal</h4>
+                            <span class="bg-purple-500/10 text-purple-400 text-[9px] font-bold px-2 py-0.5 rounded-full border border-purple-500/20 uppercase">Swasta</span>
+                        </div>
+                        <p class="text-xs text-slate-500 font-mono mb-3">https://vendor.astra.co.id</p>
+                        <a href="https://astra.co.id" target="_blank" class="text-indigo-400 text-xs hover:underline inline-flex items-center gap-1">Kunjungi Portal Asli &rarr;</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-6 bg-slate-900/20 border-t border-slate-800 flex justify-end">
+                <button onclick="closePortalsModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-all">
+                    Selesai Meninjau
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER (Custom Safe Alert) -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <!-- Scripts -->
+    <script>
+        // Database Simulasi Tender Indonesia
+        const tendersDatabase = [
+            {
+                id: "LPSE-PUPR-202",
+                title: "Pembangunan Jembatan Gantung Sawah Besar Tahap III",
+                agency: "Kementerian PUPR",
+                category: "pemerintah",
+                job_type: "Jasa Lainnya",
+                hps: 14500000000,
+                deadline: "12 Juli 2026",
+                source: "LPSE Nasional"
+            },
+            {
+                id: "LPSE-DKI-304",
+                title: "Jasa Konsultasi Penyusunan Blueprint Smart City DKI Jakarta",
+                agency: "Diskominfo DKI Jakarta",
+                category: "pemerintah",
+                job_type: "Jasa Konsultasi Non Konstruksi",
+                hps: 750000000,
+                deadline: "08 Juli 2026",
+                source: "LPSE DKI Jakarta"
+            },
+            {
+                id: "BUMN-PLN-881",
+                title: "Pengadaan Generator Turbin High-Capacity PLTU Suralaya",
+                agency: "PT PLN (Persero)",
+                category: "bumn",
+                job_type: "Pembelian Barang",
+                hps: 12800000000,
+                deadline: "22 Juli 2026",
+                source: "e-Proc PLN"
+            },
+            {
+                id: "BUMN-PERTAMINA-90",
+                title: "Jasa Inspeksi Ketahanan Pipa Distribusi Offshore Blok Rokan",
+                agency: "PT Pertamina (Persero)",
+                category: "bumn",
+                job_type: "Jasa Konsultasi Non Konstruksi",
+                hps: 3400000000,
+                deadline: "15 Juli 2026",
+                source: "e-Proc Pertamina"
+            },
+            {
+                id: "SWASTA-ASTRA-015",
+                title: "Pengadaan Unit Laptop Kerja Karyawan Divisi R&D",
+                agency: "PT Astra International Tbk",
+                category: "swasta",
+                job_type: "Pembelian Barang",
+                hps: 2400000000,
+                deadline: "18 Juli 2026",
+                source: "Portal Vendor Astra"
+            },
+            {
+                id: "SWASTA-SM-202",
+                title: "Jasa Pengelolaan Sistem Keamanan Gedung BSD Plaza",
+                agency: "PT Sinar Mas Land",
+                category: "swasta",
+                job_type: "Jasa Lainnya",
+                hps: 1200000000,
+                deadline: "30 Juli 2026",
+                source: "Tender Internal Swasta"
+            }
+        ];
+
+        // State Global Aplikasi
+        let activeCategory = 'all';
+
+        // Format Angka ke Rupiah Helper
+        function formatRupiah(num) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+        }
+
+        // Kustom Toast Alert (Pengganti Alert browser)
+        function showNotification(message, type = "success") {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            toast.className = `p-4 rounded-xl shadow-lg border text-white font-medium text-sm flex items-center gap-3 transition-all transform translate-y-2 opacity-0 duration-300 ${
+                type === "success" 
+                ? "bg-slate-900 border-indigo-500 text-indigo-400" 
+                : "bg-red-950 border-red-500 text-red-300"
+            }`;
+            
+            toast.innerHTML = `
+                <span>${type === "success" ? "🔔" : "⚠️"}</span>
+                <div>${message}</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => {
+                toast.classList.remove("translate-y-2", "opacity-0");
+            }, 50);
+
+            // Hide and remove after 4 seconds
+            setTimeout(() => {
+                toast.classList.add("opacity-0", "translate-y-2");
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // Action Menambahkan Target Scraping Baru
+        function handleAddScrape() {
+            const urlInput = document.getElementById('target-url');
+            const targetUrl = urlInput.value.trim();
+
+            if (!targetUrl) {
+                showNotification("Masukkan URL terlebih dahulu sebelum mengeklik request!", "error");
+                return;
+            }
+
+            try {
+                new URL(targetUrl); // Validasi format URL dasar
+                showNotification(`Permintaan diterima! Website "${targetUrl}" telah didaftarkan ke server crawler kami dan akan mulai di-scraping berkala.`, "success");
+                urlInput.value = ""; // Clear input
+            } catch (err) {
+                showNotification("Harap masukkan format alamat URL yang valid (contoh: https://lpse.daerah.go.id)", "error");
+            }
+        }
+
+        // Navigation Modals
+        function openPortalsModal() {
+            const modal = document.getElementById('portals-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('.transform').classList.remove('scale-95');
+            }, 50);
+        }
+
+        function closePortalsModal() {
+            const modal = document.getElementById('portals-modal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('.transform').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Filter Sektor / Kategori Tab
+        function setCategoryFilter(category) {
+            activeCategory = category;
+            
+            // Ganti highlight tombol aktif
+            const categories = ['all', 'pemerintah', 'bumn', 'swasta'];
+            categories.forEach(cat => {
+                const btn = document.getElementById(`btn-cat-${cat}`);
+                if (cat === category) {
+                    btn.className = "px-5 py-2 rounded-lg text-sm font-bold capitalize transition-all bg-white text-indigo-900 shadow-sm";
+                } else {
+                    btn.className = "px-5 py-2 rounded-lg text-sm font-bold capitalize transition-all text-slate-500 hover:text-slate-800";
+                }
+            });
+
+            filterData();
+        }
+
+        // Engine Filter & Rendering Data Utama
+        function filterData() {
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+            const jobTypeVal = document.getElementById('jobtype-select').value;
+            const tableRows = document.getElementById('tender-table-rows');
+
+            // Jalankan seleksi filter
+            let filtered = tendersDatabase.filter(tender => {
+                const matchesCategory = (activeCategory === 'all' || tender.category === activeCategory);
+                const matchesJobType = (jobTypeVal === 'all' || tender.job_type === jobTypeVal);
+                const matchesSearch = (
+                    tender.title.toLowerCase().includes(searchVal) || 
+                    tender.agency.toLowerCase().includes(searchVal) || 
+                    tender.id.toLowerCase().includes(searchVal)
+                );
+                return matchesCategory && matchesJobType && matchesSearch;
+            });
+
+            // Tampilkan baris tabel baru
+            if (filtered.length === 0) {
+                tableRows.innerHTML = `
+                    <tr>
+                        <td colSpan="5" class="p-16 text-center text-slate-400 font-medium bg-slate-50/50">
+                            <span class="text-3xl block mb-2">🚫</span>
+                            Tidak ada data tender yang cocok dengan pencarian atau filter Anda.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tableRows.innerHTML = '';
+            filtered.forEach(tender => {
+                // Label Warna Kategori
+                let categoryLabel = "";
+                if (tender.category === 'pemerintah') {
+                    categoryLabel = '<span class="text-[9px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">Pemerintah</span>';
+                } else if (tender.category === 'bumn') {
+                    categoryLabel = '<span class="text-[9px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">BUMN</span>';
+                } else {
+                    categoryLabel = '<span class="text-[9px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">Swasta</span>';
+                }
+
+                const row = `
+                    <tr class="hover:bg-blue-50/40 transition-all group">
+                        <td class="p-5">
+                            <div class="font-bold text-slate-800 group-hover:text-indigo-700 transition-colors duration-200">${tender.title}</div>
+                            <div class="text-xs text-slate-500 mt-1.5 flex items-center gap-1.5 flex-wrap">
+                                <span class="font-semibold text-slate-700">${tender.agency}</span>
+                                <span>•</span>
+                                <span class="mono text-[11px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">${tender.id}</span>
+                            </div>
+                        </td>
+                        <td class="p-5">
+                            <div class="text-xs font-semibold text-slate-700">${tender.job_type}</div>
+                            <div class="mt-1">${categoryLabel}</div>
+                        </td>
+                        <td class="p-5 font-bold text-slate-900 mono text-sm">${formatRupiah(tender.hps)}</td>
+                        <td class="p-5">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-red-50 text-red-700">
+                                ⏱️ ${tender.deadline}
+                            </span>
+                        </td>
+                        <td class="p-5 text-center">
+                            <button onclick="showNotification('Membuka rincian dokumen pengadaan ${tender.id}...')" class="bg-white border border-slate-200 text-slate-600 hover:border-indigo-500 hover:text-indigo-600 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
+                                Detail Proyek
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tableRows.innerHTML += row;
+            });
+        }
+
+        // Jalankan render data saat aplikasi pertama kali dimuat
+        window.onload = function() {
+            filterData();
+        };
+    </script>
+</body>
+</html>
